@@ -215,8 +215,7 @@ Use the exact revision and pinned Flutter version first:
 
 ```sh
 git fetch upstream
-git switch main
-git merge --ff-only upstream/main
+git switch -c chore/ios-build-baseline upstream/main
 fvm install
 fvm flutter doctor -v
 fvm flutter pub get
@@ -333,20 +332,35 @@ origin    https://github.com/Pivii/mostro-mobile.git
 upstream  https://github.com/MostroP2P/mobile.git
 ```
 
-Keep `main` clean and synchronized. Create one branch per fix:
+In a conventional fork, keep `main` as a clean mirror of `upstream/main`. This
+fork intentionally stores this report on its own `main`, so contribution
+branches must be created directly from `upstream/main`. That prevents this
+fork-only documentation commit from appearing in code pull requests.
+
+Update the local view of upstream, then create one branch per fix:
 
 ```sh
 git fetch upstream
-git switch main
-git merge --ff-only upstream/main
-git push origin main
-
-git switch -c fix/ios-face-id-description
+git switch -c fix/ios-face-id-description upstream/main
 # edit and test
 git add <specific-files>
 git commit -m "fix: configure Face ID usage description"
 git push -u origin fix/ios-face-id-description
 ```
+
+To refresh this fork's customized `main` without discarding the report, merge
+upstream into it:
+
+```sh
+git fetch upstream
+git switch main
+git merge upstream/main
+git push origin main
+```
+
+Do not use a forced GitHub fork sync unless the report has first been preserved
+on another branch or accepted upstream. A forced sync can discard commits that
+exist only in the fork.
 
 Then open a pull request from:
 
